@@ -80,7 +80,7 @@ class randomHttp(object):
     def makeVersion(self, minor = [0, 1], major = [1, 2]):
         return {'version': {'major': str(random.choice(major)), 'minor':str(random.choice(minor))}}
             
-    def makeHeads(self, head_dict, min_head_c=0, max_head_c=10, min_head_vl=0, max_head_vl=25):
+    def makeRandomHeads(self, head_dict, min_head_c=0, max_head_c=10, min_head_vl=0, max_head_vl=25):
         heads = {}
         for i in range(min_head_c, max_head_c):
             h = random.choice(head_dict)
@@ -93,6 +93,9 @@ class randomHttp(object):
     def makeRcode(self):
         rcode = random.choice(self.status_codes.keys())
         return {'rcode': str(rcode), 'status': self.status_codes[rcode]}
+
+    def makeSpecificHeads(self, key='Farts', value='Mozilla/4.0'):
+        return {'headers': {str(key): str(value)}}
                 
     def requestObject(self):
         req = {}
@@ -100,15 +103,22 @@ class randomHttp(object):
         req.update(self.makePath())
         req.update(self.makeProtocol())
         req.update(self.makeVersion())
-        req.update(self.makeHeads(self.request_headers))
+        req.update(self.makeRandomHeads(self.request_headers))
         req.update(self.makeData())
+        req.update(self.makeSpecificHeads( key='Content-Length', value=len(req['data']) ))
+        req.update(self.makeSpecificHeads( key='User-Agent', value='Mozilla/4.0' ))
+        req.update(self.makeSpecificHeads( key='Host', value='farts.farts' ))
         return req
         
     def responseObject(self):
         resp = {}
+        resp.update(self.makeProtocol())
+        resp.update(self.makeVersion())
         resp.update(self.makeRcode())
-        resp.update(self.makeHeads(self.response_headers))
+        resp.update(self.makeRandomHeads(self.response_headers))
         resp.update(self.makeData())
+        resp.update(self.makeSpecificHeads( key='Content-Length', value=len(resp['data']) ))
+        resp.update(self.makeSpecificHeads( key='Server', value='Farts v1.0' ))
         return resp
 
     def request(self):    
@@ -144,6 +154,12 @@ class randomHttp(object):
     def response(self):
         respObj = self.responseObject()
         respFile = StringIO()
+        respFile.write(respObj['protocol'])
+        respFile.write(self.slash)
+        respFile.write(respObj['version']['major'])
+        respFile.write(self.period)
+        respFile.write(respObj['version']['minor'])
+        respFile.write(self.space)
         respFile.write(respObj['rcode'])
         respFile.write(self.space)
         respFile.write(respObj['status'])
