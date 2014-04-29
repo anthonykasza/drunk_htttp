@@ -95,7 +95,7 @@ class randomHttp(object):
         return {'rcode': str(rcode), 'status': self.status_codes[rcode]}
 
     def makeSpecificHeads(self, key='Farts', value='Mozilla/4.0'):
-        return {'headers': {str(key): str(value)}}
+        return {str(key): str(value)}
                 
     def requestObject(self):
         req = {}
@@ -105,9 +105,9 @@ class randomHttp(object):
         req.update(self.makeVersion())
         req.update(self.makeRandomHeads(self.request_headers))
         req.update(self.makeData())
-        req.update(self.makeSpecificHeads( key='Content-Length', value=len(req['data']) ))
-        req.update(self.makeSpecificHeads( key='User-Agent', value='Mozilla/4.0' ))
-        req.update(self.makeSpecificHeads( key='Host', value='farts.farts' ))
+        req['headers'].update(self.makeSpecificHeads( key='Content-Length', value=len(req['data']) ))
+        req['headers'].update(self.makeSpecificHeads( key='User-Agent', value='Mozilla/4.0' ))
+        req['headers'].update(self.makeSpecificHeads( key='Host', value='farts.farts' ))
         return req
         
     def responseObject(self):
@@ -117,8 +117,8 @@ class randomHttp(object):
         resp.update(self.makeRcode())
         resp.update(self.makeRandomHeads(self.response_headers))
         resp.update(self.makeData())
-        resp.update(self.makeSpecificHeads( key='Content-Length', value=len(resp['data']) ))
-        resp.update(self.makeSpecificHeads( key='Server', value='Farts v1.0' ))
+        resp['headers'].update(self.makeSpecificHeads( key='Content-Length', value=len(resp['data']) ))
+        resp['headers'].update(self.makeSpecificHeads( key='Server', value='Farts v1.0' ))
         return resp
 
     def request(self):    
@@ -174,9 +174,3 @@ class randomHttp(object):
         respFile.write(self.crlf)
         respFile.write(self.crlf)
         return respFile.getvalue()
-
-
-
-
-
-
