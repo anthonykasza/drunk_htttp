@@ -1,3 +1,3 @@
-creating htttp requests and responses has never been so useless
+Go home HTTP, you're drunk.
 
-run the example server and the example client for a while to generate random http conversions. then feed to your favorite protocol analyzer.
+Creating htttp requests and responses has never been so useless.
